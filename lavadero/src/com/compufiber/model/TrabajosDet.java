@@ -28,7 +28,11 @@ public class TrabajosDet extends SuperClaseFeliz {
 	private Date FechoraInicio = new java.util.Date();
 	@Column(name="FCHHORAFIN",nullable=false)	
 	private Date FechoraFin = new java.util.Date();
-	
+
+	@DescriptionsList(descriptionProperties="nombre")
+	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
+	@JoinColumn(name="EMPLEADOS_ID")
+	private Empleados comisionista ;		
 	
 	public TrabajosCab getCabecero() {
 		return cabecero;
@@ -38,14 +42,37 @@ public class TrabajosDet extends SuperClaseFeliz {
 		this.cabecero = cabecero;
 	}
 
-	
-	
 	public Precios getPrecio() {
 		return precio;
 	}
 
 	public void setPrecio(Precios precio) {
 		this.precio = precio;
+	}
+	
+
+	public Date getFechoraInicio() {
+		return FechoraInicio;
+	}
+
+	public void setFechoraInicio(Date fechoraInicio) {
+		FechoraInicio = fechoraInicio;
+	}
+
+	public Date getFechoraFin() {
+		return FechoraFin;
+	}
+
+	public void setFechoraFin(Date fechoraFin) {
+		FechoraFin = fechoraFin;
+	}
+
+	public Empleados getComisionista() {
+		return comisionista;
+	}
+
+	public void setComisionista(Empleados comisionista) {
+		this.comisionista = comisionista;
 	}
 
 	@PreUpdate

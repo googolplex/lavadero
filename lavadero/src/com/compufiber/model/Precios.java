@@ -39,7 +39,9 @@ public class Precios extends SuperClaseFeliz {
 	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
 	@JoinColumn(name="SERVICIOS_ID")	
 	private Servicios servicio;
-	
+
+	@Column(length=10,nullable=false,name="LV_MCOMISION")
+	private Double montocomision = 0.0D;
 	
 	public Long getCodigo() {
 		return codigo;
