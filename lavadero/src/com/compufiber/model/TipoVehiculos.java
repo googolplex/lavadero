@@ -13,12 +13,12 @@ import org.openxava.util.*;
 public class TipoVehiculos extends SuperClaseFeliz {
 	@Required
 //	@PropertyValidator(value=ValidadorTipoIva.class,message="TipoIva duplicado",onlyOnCreate=true)
-	@Column(length=7,nullable=false,name="CODIGO",unique=true)
+	@Column(length=7,nullable=false,name="LVT_CODIGO",unique=true)
 	private Long codigo ;
 
 	@Required
 //	@PropertyValidator(value=Validador2014v.class,message="Nombre duplicado")
-	@Column(length=40,nullable=false,name="DESCRIPCION",unique=true)	
+	@Column(length=40,nullable=false,name="LVT_DESCRIPCION",unique=true)	
 	private String descripcion ;
 
 

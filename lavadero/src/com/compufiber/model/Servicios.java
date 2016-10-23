@@ -16,13 +16,13 @@ public class Servicios extends SuperClaseFeliz {
 	
 	@Required
 	//@PropertyValidator(value=Validador2013e.class,message="numero duplicado",onlyOnCreate=true)	
-	@Column(length=4,nullable=false,name="CODIGO",unique=true)
+	@Column(length=4,nullable=false,name="LVS_CODIGO",unique=true)
 	@Digits(integer=19, fraction = 0)	
 	private Long codigo ;
 
 	@Required
 	//@PropertyValidator(value=Validador2013d.class,message="Nombre duplicado")
-	@Column(length=50,nullable=false,name="DESCRIPCION",unique=true)	
+	@Column(length=50,nullable=false,name="LVS_DESCRIPCION",unique=true)	
 	private String descripcion ;
 	
 	public Long getCodigo() {

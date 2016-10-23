@@ -7,6 +7,8 @@ import javax.persistence.*;
 import org.openxava.annotations.*;
 import org.openxava.util.*;
 
+@Entity
+@Table(name="LV_VEHICULOS")
 public class Vehiculos extends SuperClaseFeliz {
 
 	@Required
@@ -31,7 +33,7 @@ public class Vehiculos extends SuperClaseFeliz {
 
 	@DescriptionsList(descriptionProperties="descripcion")
 	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
-	@JoinColumn(name="TIPOVEHICULOS_ID")
+	@JoinColumn(name="COLOR_ID")
 	private Colores color;
 
 	@Column(length=200,nullable=true,name="COMENTARIO")

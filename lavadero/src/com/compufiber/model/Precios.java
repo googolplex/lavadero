@@ -11,10 +11,11 @@ import org.openxava.util.*;
 
 
 @Entity
-@Table(name="LV_PRECIOS",
-uniqueConstraints={
-		@UniqueConstraint(name="no_repetir_precios", columnNames={"tipovehiculo", "servicio"})		
-		}
+@Table(name="LV_PRECIOS"
+//,
+//uniqueConstraints={
+//		@UniqueConstraint(name="no_repetir_precios", columnNames={"lvt_tipovehiculo", "lvs_servicio"})		
+//		}
 		)
 
 public class Precios extends SuperClaseFeliz {
