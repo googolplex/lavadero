@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
-<project name="lavadero" basedir="." default="deployWar">
+<project name="lavadero2" basedir="." default="deployWar">
 
-	<property name="project" value="lavadero" />
+	<property name="project" value="lavadero2" />
 	<property name="ox3" value="true" />
 	<property file="../openxava.properties"/>
 	

@@ -4,41 +4,38 @@ import java.util.*;
 
 import javax.persistence.*;
 
-import org.hibernate.validator.constraints.*;
 import org.openxava.annotations.*;
 import org.openxava.util.*;
 // import com.compufiber.validadores.*;
 
 @Entity
-@Table(name="LV_EMPLEADOS")
+@Table(name="LV_EMPLEADOS",
+uniqueConstraints={
+        @UniqueConstraint(name="em_no_repetir_nombre", columnNames={"nombre"}),
+        @UniqueConstraint(name="em_no_repetir_ruc", columnNames={"ruc"})
+    })
 public class Empleados extends SuperClaseFeliz {
 	@Required
-//	@PropertyValidator(value=ValidadorTipoIva.class,message="TipoIva duplicado",onlyOnCreate=true)
-	@Column(length=7,nullable=false,name="RUC",unique=true)
+	@Column(length=20,nullable=false,name="RUC")
 	private String ruc ;
 
 	@Required
-//	@PropertyValidator(value=Validador2014v.class,message="Nombre duplicado")
-	@Column(length=40,nullable=false,name="NOMBRE")	
+	@Column(length=100,nullable=false,name="NOMBRE")	
 	private String nombre ;
 
-//	@PropertyValidator(value=Validador2014v.class,message="Nombre duplicado")
-	@Column(length=40,nullable=true,name="TELEFONO1")	
-	private String telefono1 ;
+	@Stereotype("PHONE")
+	@Column(length=40,nullable=true,name="CELULAR")	
+	private String celular ;
 	
-//	@PropertyValidator(value=Validador2014v.class,message="Nombre duplicado")
-	@Column(length=40,nullable=true,name="TELEFONO2")	
-	private String telefono2 ;
 
-	@Email
-//	@PropertyValidator(value=Validador2014v.class,message="Nombre duplicado")
-	@Column(length=40,nullable=true,name="CORREO")	
+	@Stereotype("EMAIL")
+	@Column(length=100,nullable=true,name="CORREO")	
 	private String correo ;
 	
-//	@PropertyValidator(value=Validador2014v.class,message="Nombre duplicado")
-	@Column(length=40,nullable=true,name="DIRECCION")	
-	private String direccion ;
-	
+	@DescriptionsList(descriptionProperties="direccion, ciudad, barrio")
+	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
+	@JoinColumn(name="DIRECCION_ID")
+	private DireccionesEmpleados direccion ;		
 	
 	public String getRuc() {
 		return ruc;
@@ -55,21 +52,15 @@ public class Empleados extends SuperClaseFeliz {
 	public void setNombre(String nombre) {
 		this.nombre = nombre.toUpperCase().trim();
 	}
-		
-	public String getTelefono1() {
-		return telefono1;
+
+	
+	
+	public String getCelular() {
+		return celular;
 	}
 
-	public void setTelefono1(String telefono1) {
-		this.telefono1 = telefono1.toUpperCase().trim();
-	}
-
-	public String getTelefono2() {
-		return telefono2;
-	}
-
-	public void setTelefono2(String telefono2) {
-		this.telefono2 = telefono2.toUpperCase().trim();
+	public void setCelular(String celular) {
+		this.celular = celular;
 	}
 
 	public String getCorreo() {
@@ -79,13 +70,13 @@ public class Empleados extends SuperClaseFeliz {
 	public void setCorreo(String correo) {
 		this.correo = correo;
 	}
-		
-	public String getDireccion() {
+
+	public DireccionesEmpleados getDireccion() {
 		return direccion;
 	}
 
-	public void setDireccion(String direccion) {
-		this.direccion = direccion.toUpperCase().trim();
+	public void setDireccion(DireccionesEmpleados direccion) {
+		this.direccion = direccion;
 	}
 
 	@PreUpdate

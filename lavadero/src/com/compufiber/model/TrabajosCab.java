@@ -5,24 +5,30 @@ import java.util.*;
 import javax.persistence.*;
 
 import org.openxava.annotations.*;
+import org.openxava.calculators.*;
 import org.openxava.jpa.*;
 import org.openxava.util.*;
 
-//@Tab(properties="ventasNro,fechaventas,sucursal.nombre,empleado.nombre,estadoventa.descripcion,yexento,ygravado,yiva,ytotal")
-//@View(members="ventasNro,fechaventas;sucursal,cliente;empleado,formadepago,estadoventa ; detalles; wexento,wgravado,wiva,wtotal;nrotjch")
+@Tab(properties="trabajoNro,fechatrabajo,cliente.nombre,vehiculo.chapa,vehiculo.marca.descripcion")
+//@View(members="trabajoNro,fechatrabajo;sucursal,cliente;empleado,formadepago,estadoventa ; detalles; wexento,wgravado,wiva,wtotal;nrotjch")
 @Entity
 @Table(name="LV_TRABAJOSCAB")
 public class TrabajosCab extends SuperClaseFeliz {
 	@ReadOnly	
-	@Column(length=19,nullable=false,name="ventasnro",unique=true)
+	@Column(length=19,nullable=false,name="trabajonro",unique=true)
 	private Long trabajoNro = 0L; 
+	
+	@Required
+	@DefaultValueCalculator(CurrentDateCalculator.class)
+	@Column(nullable=false,name="FECHATRABAJO")
+	private Date fechatrabajo ; 
 
 	@DescriptionsList(descriptionProperties="nombre")
 	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
 	@JoinColumn(name="CLIENTES_ID")
 	private Clientes cliente ;		
 	
-	@DescriptionsList(descriptionProperties="chapa,color,marca")
+	@DescriptionsList(descriptionProperties="chapa,color.descripcion,marca.descripcion")
 	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
 	@JoinColumn(name="VEHICULOS_ID")
 	private Vehiculos vehiculo ;		
@@ -32,14 +38,79 @@ public class TrabajosCab extends SuperClaseFeliz {
 	@JoinColumn(name="EMPLEADOS_ID")
 	private Empleados empleado ;		
 	
-	@Column(length=200,nullable=true,name="COMENTARIO")
+	
+	@Stereotype("MEMO")
+	@Column(length=500,nullable=true,name="COMENTARIO")
+	// @Column(nullable=true,name="COMENTARIO")
 	private String comentario;	
 
-	@ListProperties("producto.codprod,producto.descripcion,tipoiva.descripcion, comisionista.nombre,cantidad,precio,texento,tgravado,tiva,tgeneral")
+	@Stereotype("TIME")
+	@Required
+	@Column(name="HORAESTIMADAFIN",nullable=false)	
+	private String horaEstimadaFin;
+	
+	@ReadOnly
+	@Stereotype("TIME")
+	@Column(name="HORACALCULADAFIN")	
+	private String horaCalculadaFin;	
+	
+	@Hidden
+	@Column(name="rotulo")
+	private String rotulo;	
+	
+	//@ListProperties("producto.codprod,producto.descripcion,tipoiva.descripcion, comisionista.nombre,cantidad,precio,texento,tgravado,tiva,tgeneral")
 	@OneToMany(mappedBy="cabecero",cascade=CascadeType.ALL)
 	private Collection<TrabajosDet> detalles = new ArrayList<TrabajosDet>() ;	
 	
+	public Long getTrabajoNro() {
+		return trabajoNro;
+	}
+
+	public void setTrabajoNro(Long trabajoNro) {
+		this.trabajoNro = trabajoNro;
+	}
 	
+	public Date getFechatrabajo() {
+		return fechatrabajo;
+	}
+
+	public void setFechatrabajo(Date fechatrabajo) {
+		this.fechatrabajo = fechatrabajo;
+	}
+
+	public Collection<TrabajosDet> getDetalles() {
+		return detalles;
+	}
+
+	public void setDetalles(Collection<TrabajosDet> detalles) {
+		this.detalles = detalles;
+	}
+
+	public String getHoraEstimadaFin() {
+		return horaEstimadaFin;
+	}
+	
+	public String getHoraCalculadaFin() {
+		return horaCalculadaFin;
+	}
+
+	public void setHoraCalculadaFin(String horaCalculadaFin) {
+		this.horaCalculadaFin = horaCalculadaFin;
+	}
+
+	public void setHoraEstimadaFin(String horaEstimadaFin) {
+		this.horaEstimadaFin = horaEstimadaFin;
+	}
+	
+
+	public String getRotulo() {
+		return rotulo;
+	}
+
+	public void setRotulo(String rotulo) {
+		this.rotulo = rotulo;
+	}
+
 	private Long siguienteventasNro() {
 		Date ahora = new Date() ;
 		Calendar micalendario = Calendar.getInstance() ;
@@ -49,7 +120,7 @@ public class TrabajosCab extends SuperClaseFeliz {
 		Long ultimoNumero = 0L;
 		Long cual = 0L ;
 		
-		Query w = XPersistence.getManager().createQuery("select count(*) as numerazo from VentasCab i where year(i.fechaventas) = :anhofeliz and month(i.fechaventas) = :mesfeliz");
+		Query w = XPersistence.getManager().createQuery("select count(*) as numerazo from TrabajosCab i where year(i.fechatrabajo) = :anhofeliz and month(i.fechatrabajo) = :mesfeliz");
 			micalendario.setTime(ahora);		
 			anholargo = micalendario.get(Calendar.YEAR) ;
 			meslargo  = micalendario.get(Calendar.MONTH) + 1;
@@ -62,24 +133,6 @@ public class TrabajosCab extends SuperClaseFeliz {
 			return ventasfeliz ;		
 	}	
 	
-	
-	
-	public Long getVentasNro() {
-		return trabajoNro;
-	}
-
-	public void setVentasNro(Long ventasNro) {
-		this.trabajoNro = ventasNro;
-	}
-
-	public Long getTrabajoNro() {
-		return trabajoNro;
-	}
-
-	public void setTrabajoNro(Long trabajoNro) {
-		this.trabajoNro = trabajoNro;
-	}
-
 	public Clientes getCliente() {
 		return cliente;
 	}
@@ -117,12 +170,14 @@ public class TrabajosCab extends SuperClaseFeliz {
 			Date mifechora = new java.util.Date() ;
 			super.setModificadoPor(Users.getCurrent()) ;
 			super.setFchUltMod(mifechora)  ;			
-			// this.calcularTotales();
+			this.setRotulo(this.getVehiculo().getRotulo());
 	}	
 	
 	@PrePersist
 	private void antesDeGrabar() {
-		this.setVentasNro(this.siguienteventasNro()) ;
+		this.setTrabajoNro(this.siguienteventasNro());
+		this.setRotulo(this.getVehiculo().getRotulo());
 		// this.calcularTotales();
-	}	
+	}
+	
 }

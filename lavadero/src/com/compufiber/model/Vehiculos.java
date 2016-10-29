@@ -6,14 +6,16 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 import org.openxava.util.*;
-
+@Tab(properties="tipovehiculo.descripcion,marca.descripcion,color.descripcion,chapa,modelo")
 @Entity
-@Table(name="LV_VEHICULOS")
+@Table(name="LV_VEHICULOS",
+uniqueConstraints={
+        @UniqueConstraint(name="vh_no_repetir_chapa", columnNames={"chapa"})
+    })
 public class Vehiculos extends SuperClaseFeliz {
 
 	@Required
-//	@PropertyValidator(value=ValidadorTipoIva.class,message="TipoIva duplicado",onlyOnCreate=true)
-	@Column(length=7,nullable=false,name="CHAPA",unique=true)
+	@Column(length=20,nullable=false,name="CHAPA")
 	private String chapa ;
 
 	@DescriptionsList(descriptionProperties="descripcion")
@@ -25,19 +27,23 @@ public class Vehiculos extends SuperClaseFeliz {
 	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
 	@JoinColumn(name="MARCAS_ID")
 	private Marcas marca;
-	
-	@DescriptionsList(descriptionProperties="descripcion")
-	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
-	@JoinColumn(name="MODELOS_ID")	
-	private Modelos modelo;
 
+	@Required
+	@Column(length=20,nullable=false,name="MODELO")
+	private Long modelo ;
+		
 	@DescriptionsList(descriptionProperties="descripcion")
 	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
 	@JoinColumn(name="COLOR_ID")
 	private Colores color;
 
-	@Column(length=200,nullable=true,name="COMENTARIO")
+	@Stereotype("memo")
+	@Column(name="COMENTARIO")
 	private String comentario;
+	
+	@Hidden
+	@Column(name="rotulo")
+	private String rotulo;	
 	
 	public String getChapa() {
 		return chapa;
@@ -64,11 +70,12 @@ public class Vehiculos extends SuperClaseFeliz {
 		this.marca = marca;
 	}
 
-	public Modelos getModelo() {
+
+	public Long getModelo() {
 		return modelo;
 	}
 
-	public void setModelo(Modelos modelo) {
+	public void setModelo(Long modelo) {
 		this.modelo = modelo;
 	}
 
@@ -81,11 +88,21 @@ public class Vehiculos extends SuperClaseFeliz {
 	}
 
 	public String getComentario() {
-		return comentario.toUpperCase().trim();
+		return comentario;
 	}
 
 	public void setComentario(String comentario) {
-		this.comentario = comentario;
+		this.comentario = comentario.toUpperCase().trim();
+	}
+
+	
+	
+	public String getRotulo() {
+		return rotulo;
+	}
+
+	public void setRotulo(String rotulo) {
+		this.rotulo = rotulo;
 	}
 
 	@PreUpdate
@@ -93,5 +110,10 @@ public class Vehiculos extends SuperClaseFeliz {
 			Date mifechora = new java.util.Date() ;
 			super.setModificadoPor(Users.getCurrent()) ;
 			super.setFchUltMod(mifechora)  ;
+			this.setRotulo(this.getChapa()+"-"+this.getMarca().getDescripcion()+"-"+this.getColor().getDescripcion()+"-"+this.getTipovehiculo().getDescripcion());			
 	}	
+	@PrePersist
+	private void antesDeGrabar() {
+		this.setRotulo(this.getChapa()+"-"+this.getMarca().getDescripcion()+"-"+this.getColor().getDescripcion()+"-"+this.getTipovehiculo().getDescripcion());
+	}
 }

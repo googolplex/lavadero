@@ -8,32 +8,36 @@ import org.openxava.annotations.*;
 import org.openxava.util.*;
 
 
-//@Tab(properties="producto.codprod,producto.descripcion,comisionista,cantidad,precio,texento,tgravado,tiva,tgeneral")
-//@View(members="producto,cantidad,stock;precio,tipoiva;comisionista;Totales [texento,tgravado,tiva,tgeneral]")
+
+// @View(members="trabajo.servicio.descripcion,trabajo.tipovehiculo.descripcion")
+@Tab(properties="rotulo,subtotal")
 @Entity
-@Table(name="LV_TRABAJOSDET")
+@Table(name="LV_TRABAJOSDET"
+,
+uniqueConstraints={ 
+	@UniqueConstraint(name="td_no_repetir_detalle", columnNames={"trabajo_id"})		
+	}
+		)
 public class TrabajosDet extends SuperClaseFeliz {
 
 	@ManyToOne
 	@JoinColumn(name="TRABAJOSCAB_ID")
 	private TrabajosCab cabecero ;				
 
-	@DescriptionsList(descriptionProperties="descripcion")
+	@DescriptionsList(descriptionProperties="rotulo")
 	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
-	@JoinColumn(name="PRECIOS_ID")
-	private Precios precio ;
-
-
-	@Column(name="FCHHORAINICIO",nullable=false)
-	private Date FechoraInicio = new java.util.Date();
-	@Column(name="FCHHORAFIN",nullable=false)	
-	private Date FechoraFin = new java.util.Date();
-
-	@DescriptionsList(descriptionProperties="nombre")
-	@ManyToOne(fetch=FetchType.LAZY,optional=false)	
-	@JoinColumn(name="EMPLEADOS_ID")
-	private Empleados comisionista ;		
+	@JoinColumn(name="TRABAJO_ID")
+	private Precios trabajo ;
 	
+	@ReadOnly
+	@Stereotype("MONEY")
+	@Column(name="subtotal",nullable=true,length=20)
+	private double subtotal ;	
+
+	@ReadOnly
+	@Column(name="rotulo")
+	private String rotulo;
+
 	public TrabajosCab getCabecero() {
 		return cabecero;
 	}
@@ -42,53 +46,52 @@ public class TrabajosDet extends SuperClaseFeliz {
 		this.cabecero = cabecero;
 	}
 
-	public Precios getPrecio() {
-		return precio;
+
+
+	public Precios getTrabajo() {
+		return trabajo;
 	}
 
-	public void setPrecio(Precios precio) {
-		this.precio = precio;
-	}
-	
 
-	public Date getFechoraInicio() {
-		return FechoraInicio;
+
+	public void setTrabajo(Precios trabajo) {
+		this.trabajo = trabajo;
 	}
 
-	public void setFechoraInicio(Date fechoraInicio) {
-		FechoraInicio = fechoraInicio;
+
+
+	public double getSubtotal() {
+		return subtotal;
 	}
 
-	public Date getFechoraFin() {
-		return FechoraFin;
+
+
+	public void setSubtotal(double subtotal) {
+		this.subtotal = subtotal;
 	}
 
-	public void setFechoraFin(Date fechoraFin) {
-		FechoraFin = fechoraFin;
+
+
+	public String getRotulo() {
+		return rotulo;
 	}
 
-	public Empleados getComisionista() {
-		return comisionista;
-	}
-
-	public void setComisionista(Empleados comisionista) {
-		this.comisionista = comisionista;
+	public void setRotulo(String rotulo) {
+		this.rotulo = rotulo;
 	}
 
 	@PreUpdate
 	public void ultimoPaso() {
 			Date mifechora = new java.util.Date() ;
-	//		this.precio = this.getPrecioFeliz() ;
-	//		this.mizTotales();
 			super.setModificadoPor(Users.getCurrent()) ;
-			super.setFchUltMod(mifechora)  ;
-	//		this.getCabecero().calcularTotales();			
+			super.setFchUltMod(mifechora)  ;	
+			this.setRotulo(this.getTrabajo().getRotulo());
+			this.setSubtotal(this.getTrabajo().getPrecio());
 	}	
 	@PrePersist
 	private void antesDeGrabar() {
-	//	this.precio = this.getPrecioFeliz() ;
-	//	this.mizTotales();
-	//	this.getCabecero().getDetalles().add(this);		// para pasar los totales al cabecero
-	//	this.getCabecero().calcularTotales();
+		this.setRotulo(this.getTrabajo().getRotulo());
+		this.setSubtotal(this.getTrabajo().getPrecio());
+
 	}
 }

@@ -11,18 +11,20 @@ import org.openxava.util.*;
 
 
 @Entity
-@Table(name="LV_SERVICIOS")
+@Table(name="LV_SERVICIOS",
+uniqueConstraints={
+        @UniqueConstraint(name="lv_no_repetir_codigo", columnNames={"codigo"}),
+        @UniqueConstraint(name="lv_no_repetir_descripcion", columnNames={"descripcion"})        
+    })
 public class Servicios extends SuperClaseFeliz {
 	
 	@Required
-	//@PropertyValidator(value=Validador2013e.class,message="numero duplicado",onlyOnCreate=true)	
-	@Column(length=4,nullable=false,name="LVS_CODIGO",unique=true)
+	@Column(length=20,nullable=false,name="CODIGO")
 	@Digits(integer=19, fraction = 0)	
 	private Long codigo ;
 
 	@Required
-	//@PropertyValidator(value=Validador2013d.class,message="Nombre duplicado")
-	@Column(length=50,nullable=false,name="LVS_DESCRIPCION",unique=true)	
+	@Column(length=100,nullable=false,name="DESCRIPCION")	
 	private String descripcion ;
 	
 	public Long getCodigo() {

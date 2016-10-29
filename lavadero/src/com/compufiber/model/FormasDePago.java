@@ -9,16 +9,19 @@ import org.openxava.util.*;
 // import com.compufiber.validadores.*;
 
 @Entity
-@Table(name="LV_FORMASDEPAGO")
+@Table(name="LV_FORMASDEPAGO",
+uniqueConstraints={
+        @UniqueConstraint(name="no_repetir_descripcion", columnNames={"descripcion"}),
+        @UniqueConstraint(name="no_repetir_codigo", columnNames={"codigo"})
+    }
+		)
 public class FormasDePago extends SuperClaseFeliz {
 	@Required
-//	@PropertyValidator(value=ValidadorTipoIva.class,message="TipoIva duplicado",onlyOnCreate=true)
-	@Column(length=7,nullable=false,name="CODIGO",unique=true)
+	@Column(length=20,nullable=false,name="CODIGO")
 	private Long codigo ;
 
 	@Required
-//	@PropertyValidator(value=Validador2014v.class,message="Nombre duplicado")
-	@Column(length=40,nullable=false,name="DESCRIPCION",unique=true)	
+	@Column(length=100,nullable=false,name="DESCRIPCION")	
 	private String descripcion ;
 
 
