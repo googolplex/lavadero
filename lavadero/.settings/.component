@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-	<wb-module deploy-name="lavadero">
+	<wb-module deploy-name="lavadero2">
 	<wb-resource deploy-path="/" source-path="/web"/>
 	<wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
 	<wb-resource deploy-path="/WEB-INF/classes" source-path="/xava"/>
@@ -12,7 +12,7 @@
     <dependent-module archiveName="Addons.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/Addons/Addons">
         <dependency-type>uses</dependency-type>
     </dependent-module>		
-	<property name="context-root" value="lavadero"/>
+	<property name="context-root" value="lavadero2"/>
 	<property name="java-output-path" value="/build/classes/"/>
 </wb-module>
 </project-modules>
